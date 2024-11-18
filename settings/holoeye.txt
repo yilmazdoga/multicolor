@@ -27,7 +27,22 @@
                                  "defocus blur size"       : 20,
                                  "blur ratio"              : 3,
                                  "scheme"                  : "defocus",
-                                 "weights"                 : [1.0, 1.0, 1.0, 0.0],
+                                 "weights"                 : {
+                                                              "base_l2_loss" : 1.0,
+                                                              "loss_l2_mask" : 1.0,
+                                                              "loss_l2_cor"  : 1.0,
+                                                              "base_l1_loss" : 0.0,
+                                                              "loss_l1_mask" : 0.0,
+                                                              "loss_l1_cor"  : 0.0
+                                                             },
+                                 "perceptual weights"      : {
+                                                              "cvvdp"        : 1.0,
+                                                              "fvvdp"        : 1.0,
+                                                              "lpips"        : 1.0,
+                                                              "psnr"         : 1.0,
+                                                              "ssim"         : 1.0,
+                                                              "msssim"       : 1.0
+                                                             },
                                  "optimize peak amplitude" : 0,
                                  "eye aperture size"       : 1080,
                                  "img loss threshold"      : 1.0e-2

@@ -2,7 +2,7 @@ import sys
 import argparse
 import torch
 import odak
-from odak.learn.wave import multi_color_hologram_optimizer, multiplane_loss, propagator
+from odak.learn.wave import multi_color_hologram_optimizer, perceptual_multiplane_loss, propagator
 
 
 __title__ = 'Multi-color Holograms'
@@ -55,17 +55,18 @@ def process(settings_fn):
     target_depth = target_depth[0:resolution[0], 0:resolution[1]]
     if settings["beam"]["beam profile"] != '':
         target_image = compansate_illumination(settings, target_image, device)
-    loss_function = multiplane_loss(
-                                    target_image = target_image,
-                                    target_depth = target_depth,
-                                    target_blur_size = settings["target"]["defocus blur size"],
-                                    number_of_planes = settings["target"]["number of depth layers"],
-                                    blur_ratio = settings["target"]["blur ratio"],
-                                    weights = settings["target"]["weights"],
-                                    scheme = settings["target"]["scheme"],
-                                    reduction = settings['general']['reduction'],
-                                    device = device
-                                   )
+    loss_function = perceptual_multiplane_loss(
+                                               target_image = target_image,
+                                               target_depth = target_depth,
+                                               blur_ratio = settings["target"]["blur ratio"],
+                                               target_blur_size = settings["target"]["defocus blur size"],
+                                               number_of_planes = settings["target"]["number of depth layers"],
+                                               base_loss_weights = settings["target"]["weights"],
+                                               additional_loss_weights = settings["target"]["perceptual weights"],
+                                               scheme = settings["target"]["scheme"],
+                                               reduction = settings['general']['reduction'],
+                                               device = device
+                                              )
     targets, focus_target, depth = loss_function.get_targets()
     propagator_mc = propagator(
                                wavelengths = settings['beam']['wavelengths'],
